@@ -31,22 +31,30 @@
         }
 
         .app-container {
-            width: min(400px, 100vw);
-            height: 100vh;
-            margin: 0 auto;
+            width: 400px;
+            height: 600px;
+            margin: 50px auto;
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
+            resize: both;
+            overflow: auto;
+            min-width: 300px;
+            min-height: 400px;
+            max-width: 90vw;
+            max-height: 90vh;
         }
 
-        @media (min-width: 500px) {
+        @media (max-width: 500px) {
             .app-container {
-                width: 400px;
-                height: 600px;
-                margin: 50px auto;
+                width: 100vw;
+                height: 100vh;
+                margin: 0;
+                border-radius: 0;
+                resize: none;
             }
         }
 
@@ -295,8 +303,14 @@
                 <button class="control-button" onclick="toggleTheme()">🌓 테마</button>
             </div>
             <div class="control-group">
-                <span style="font-size: 12px; opacity: 0.7;">투명도</span>
-                <input type="range" class="opacity-slider" min="30" max="100" value="90" onchange="changeOpacity(this.value)">
+                <div class="slider-group">
+                    <span style="font-size: 12px; opacity: 0.7;">투명도</span>
+                    <input type="range" class="opacity-slider" min="30" max="100" value="90" onchange="changeOpacity(this.value)">
+                </div>
+                <div class="slider-group">
+                    <span style="font-size: 12px; opacity: 0.7;">글씨</span>
+                    <input type="range" class="font-slider" min="12" max="24" value="16" onchange="changeFontSize(this.value)">
+                </div>
             </div>
         </div>
     </div>
@@ -363,7 +377,14 @@
                 
             } else if (event.key === 'Backspace' && input.value === '') {
                 event.preventDefault();
-                deleteCurrentItem(item);
+                
+                // 먼저 뎁스가 있는지 확인하고 뎁스를 줄임
+                if (item.classList.contains('depth-1') || item.classList.contains('depth-2')) {
+                    decreaseDepth(item);
+                } else {
+                    // 뎁스가 없으면 항목 삭제
+                    deleteCurrentItem(item);
+                }
             }
         }
 
@@ -442,6 +463,24 @@
             saveToStorage();
         }
 
+        function changeFontSize(value) {
+            console.log('폰트 크기 변경:', value + 'px'); // 디버깅용
+            
+            // 모든 텍스트 요소 선택
+            const allText = document.querySelectorAll('.task-input, .task-text');
+            console.log('찾은 요소 개수:', allText.length); // 디버깅용
+            
+            allText.forEach(element => {
+                element.style.fontSize = value + 'px';
+                element.style.setProperty('font-size', value + 'px', 'important');
+            });
+            
+            // CSS 변수도 설정
+            document.documentElement.style.setProperty('--global-font-size', value + 'px');
+            
+            saveToStorage();
+        }
+
         function changeOpacity(value) {
             const container = document.getElementById('appContainer');
             const opacity = value / 100;
@@ -461,7 +500,8 @@
                 today: getTasksFromList('todayTasks'),
                 tomorrow: getTasksFromList('tomorrowTasks'),
                 theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
-                opacity: document.querySelector('.opacity-slider').value
+                opacity: document.querySelector('.opacity-slider').value,
+                fontSize: document.querySelector('.font-slider').value
             };
             localStorage.setItem('todoData', JSON.stringify(data));
         }
@@ -477,6 +517,10 @@
                 if (data.opacity) {
                     document.querySelector('.opacity-slider').value = data.opacity;
                     changeOpacity(data.opacity);
+                }
+                if (data.fontSize) {
+                    document.querySelector('.font-slider').value = data.fontSize;
+                    changeFontSize(data.fontSize);
                 }
                 restoreTasksToList('yesterdayTasks', data.yesterday || []);
                 restoreTasksToList('todayTasks', data.today || []);
@@ -531,6 +575,13 @@
                     span.style.display = 'none';
                     item.appendChild(input);
                     input.focus();
+                    
+                    // 현재 폰트 크기 적용
+                    const currentSize = document.querySelector('.font-slider').value;
+                    if (currentSize) {
+                        input.style.fontSize = currentSize + 'px';
+                        span.style.fontSize = currentSize + 'px';
+                    }
                 };
             });
             
@@ -542,6 +593,13 @@
                 <input type="text" class="task-input" placeholder="할 일을 입력하세요..." onkeydown="handleKeyboard(event)">
             `;
             list.appendChild(newItem);
+            
+            // 새 항목에도 폰트 크기 적용
+            const currentSize = document.querySelector('.font-slider').value;
+            if (currentSize) {
+                const newInput = newItem.querySelector('.task-input');
+                newInput.style.fontSize = currentSize + 'px';
+            }
         }
 
         // 초기화
