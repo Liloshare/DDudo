@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>뚜두</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIuuakyIsCiAgInNob3J0X25hbWUiOiAi65aTIiwKICAiZGVzY3JpcHRpb24iOiAi7LK87YGsIOumrOyKpO2KuCDslZHsl5QiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiM2NjdlZWEiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXhNakFpSUdobGFXZG9kRDBpTVRJd0lqNGdQSEpsWTNRZ2QybGtkR2c5SWpFeU1DSWdhR1ZwWjJoMFBTSXhNakFpSUdacGJHeGZjblJzSWpvZ2FYSkJKaU5tWm1ZaVBpQTNQR05wY21Oc1pTQmplRDBpTmpBaUlHTjVQU0kyTUNJZ2NqMGlOREFpSUdacGJHdzlJaU5tTmpkbFpXRWlQaUE4TDJOcGNtTnNaVDRnUEhSbGVIUWdlRDBpTmpBaUlIazlJamMxSWlCMFlXRjlhWFJoWldRblBTSWlJR1pwYkd3OU9TSXhJaUJtYjI1MExYSmhiV2xzZVRvaWQyVmlhMmwwSWlCbWIyNTBMWE5wZW1VNk1UZ2lJR1pwYkd3OUlpTm1abVlpUGowWWduSWdQQzkwWlhoMFBpQThMM04yWno0PSIsCiAgICAgICJzaXplcyI6ICIxMjB4MTIwIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhkcFpIUm9QU0l5TlRZaUlHaGxhV2RvZEQwaU1qVTJJajRnUEhKbFkzUWdkMmxrZEdnOUlqSTFOaUlnYUdWcFoyaDBQU0l5TlRZaUlHWnBiR3dqZEhKc0ltOFpJRHNKUWloR1p6NTJkQzR5SWo0Z1BHTnBjbU5zWlNCamVEMGlNVEk0SWlCamVUMGlNVEk0SWlCeVBTSTRNQ0lnWm1sc2JEMGlJell6WldWaFlTSXZQaUE4ZEdWNGRDQjRQU0l4TWpnaUlIazlJakUyTUNJZ2RHRjRJaTFoYm1Ob2IzSTlJbTFwWkdSc1pTSWdabWxzYkQwaUkwWkdSaUlnWm05dWRDMW1ZVzFwYkhVNmQyVmlhMmwwSWlCbWIyNTBMWE5wZW1Vek1TSWdabWxzYkQwaUlqVkdJaTQrVmpJc0ptWnVadHR5S2tBdVNYSVdTb2kySGZqTlRoUVJucEhzNTU5a3JXNVNxWCtQOG05enZhZ0FZelVtNm5kM3N2enFwNWxRWkI4cWQ0dWxzUVM2a0VHY3VWWGFZVnpWMlVaaDFzRnI1dmtweCtVL1BTdCtxRzhmL3kyOCIsCiAgICAgICJzaXplcyI6ICIyNTZ4MjU2IiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0K">
+    <meta name="theme-color" content="#667eea">
     <style>
         * {
             margin: 0;
@@ -29,15 +31,23 @@
         }
 
         .app-container {
-            width: 400px;
-            height: 600px;
-            margin: 50px auto;
+            width: min(400px, 100vw);
+            height: 100vh;
+            margin: 0 auto;
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
+        }
+
+        @media (min-width: 500px) {
+            .app-container {
+                width: 400px;
+                height: 600px;
+                margin: 50px auto;
+            }
         }
 
         .light-mode .app-container {
@@ -299,6 +309,51 @@
     </div>
 
     <script>
+        // PWA 설치 관련
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallButton();
+        });
+
+        function showInstallButton() {
+            // 설치 버튼을 표시하거나 안내 메시지
+            console.log('PWA 설치 가능');
+        }
+
+        // Service Worker 등록
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swData = `
+                    const CACHE_NAME = 'todo-v1';
+                    const urlsToCache = ['./', 'data:text/html,'];
+                    
+                    self.addEventListener('install', (event) => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then((cache) => cache.addAll(urlsToCache))
+                        );
+                    });
+                    
+                    self.addEventListener('fetch', (event) => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then((response) => response || fetch(event.request))
+                        );
+                    });
+                `;
+                
+                const blob = new Blob([swData], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(swUrl)
+                    .then(() => console.log('SW registered'))
+                    .catch(() => console.log('SW registration failed'));
+            });
+        }
+
         function updateDates() {
             const today = new Date();
             const yesterday = new Date(today);
@@ -333,7 +388,7 @@
                 const taskText = document.createElement('span');
                 taskText.className = 'task-text';
                 taskText.textContent = text;
-                taskText.onclick = () => editTask(taskText, input);
+                taskText.onclick = () => editTaskText(taskText);
                 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-btn';
@@ -342,6 +397,7 @@
                 
                 input.parentElement.appendChild(taskText);
                 input.parentElement.appendChild(deleteBtn);
+                saveToStorage();
             }
         }
 
@@ -385,15 +441,18 @@
         function toggleTask(checkbox) {
             checkbox.classList.toggle('checked');
             checkbox.closest('.task-item').classList.toggle('completed');
+            saveToStorage();
         }
 
         function deleteTask(deleteBtn) {
             deleteBtn.closest('.task-item').remove();
+            saveToStorage();
         }
 
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             document.body.classList.toggle('dark-mode');
+            saveToStorage();
         }
 
         function changeOpacity(value) {
@@ -405,6 +464,7 @@
             } else {
                 container.style.background = `rgba(0, 0, 0, ${opacity * 0.5})`;
             }
+            saveToStorage();
         }
 
         function addDefaultInputs() {
@@ -423,9 +483,112 @@
             });
         }
 
+        // 데이터 저장/불러오기
+        function saveToStorage() {
+            const data = {
+                yesterday: getTasksFromList('yesterdayTasks'),
+                today: getTasksFromList('todayTasks'), 
+                tomorrow: getTasksFromList('tomorrowTasks'),
+                theme: document.body.classList.contains('dark-mode') ? 'dark' : 'light',
+                opacity: document.querySelector('.opacity-slider').value
+            };
+            localStorage.setItem('todoData', JSON.stringify(data));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('todoData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                // 테마 복원
+                if (data.theme === 'dark') {
+                    document.body.classList.remove('light-mode');
+                    document.body.classList.add('dark-mode');
+                }
+                
+                // 투명도 복원
+                if (data.opacity) {
+                    document.querySelector('.opacity-slider').value = data.opacity;
+                    changeOpacity(data.opacity);
+                }
+                
+                // 할일 목록 복원
+                restoreTasksToList('yesterdayTasks', data.yesterday || []);
+                restoreTasksToList('todayTasks', data.today || []);
+                restoreTasksToList('tomorrowTasks', data.tomorrow || []);
+            }
+        }
+
+        function getTasksFromList(listId) {
+            const list = document.getElementById(listId);
+            const tasks = [];
+            
+            list.querySelectorAll('.task-item').forEach(item => {
+                const taskText = item.querySelector('.task-text');
+                if (taskText) {
+                    tasks.push({
+                        text: taskText.textContent,
+                        completed: item.classList.contains('completed')
+                    });
+                }
+            });
+            return tasks;
+        }
+
+        function restoreTasksToList(listId, tasks) {
+            const list = document.getElementById(listId);
+            list.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const taskItem = document.createElement('li');
+                taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+                taskItem.innerHTML = `
+                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(this)"></div>
+                    <span class="task-text" onclick="editTaskText(this)">${task.text}</span>
+                    <button class="delete-btn" onclick="deleteTask(this)">×</button>
+                `;
+                list.appendChild(taskItem);
+            });
+            
+            // 새 입력칸 추가
+            addNewTaskInput(list);
+        }
+
+        function editTaskText(taskText) {
+            const input = document.createElement('input');
+            input.className = 'task-input';
+            input.value = taskText.textContent;
+            input.style.display = 'block';
+            
+            taskText.style.display = 'none';
+            const deleteBtn = taskText.nextElementSibling;
+            if (deleteBtn) deleteBtn.style.display = 'none';
+            
+            taskText.parentElement.appendChild(input);
+            input.focus();
+            
+            input.onblur = input.onkeypress = (e) => {
+                if (e.type === 'blur' || e.key === 'Enter') {
+                    const newText = input.value.trim();
+                    if (newText) {
+                        taskText.textContent = newText;
+                        taskText.style.display = 'block';
+                        if (deleteBtn) deleteBtn.style.display = 'block';
+                    }
+                    input.remove();
+                    saveToStorage();
+                }
+            };
+        }
+
         // 초기화
         updateDates();
+        loadFromStorage(); // 저장된 데이터 불러오기
         addDefaultInputs();
+
+        // 데이터 자동 저장 (변경사항 있을 때마다)
+        document.addEventListener('change', saveToStorage);
+        document.addEventListener('input', saveToStorage);
 
         // 오늘 섹션으로 스크롤
         setTimeout(() => {
